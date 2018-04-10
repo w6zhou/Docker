@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wenqi
+  labels:
+    app: wenqi1
+spec:
+  type: NodePort
+  ports:
+  - port: 5000
+    name: http
+  selector:
+    app: wenqi1
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wenqi-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wenqi1
+        version: v1
+    spec:
+      containers:
+      - name: wenqi2
+        image: wenqizhou/docker
+        resources:
+          requests:
+            cpu: "100m"
+        imagePullPolicy: IfNotPresent #Always
+        ports:
+        - containerPort: 5000
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: wenqi
+  annotations:
+    kubernetes.io/ingress.class: "istio"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /wenqi
+        backend:
+          serviceName: wenqi
+          servicePort: 5000
+---
