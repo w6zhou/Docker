@@ -3,7 +3,7 @@ from flask import Flask
 app = Flask(__name__)
 
 
-@app.route('/lalala')
+@app.route('/api/lalala')
 def hello():
     return 'Hello World! I have been seen times.ddd'
 
