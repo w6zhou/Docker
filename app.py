@@ -3,9 +3,9 @@ from flask import Flask
 app = Flask(__name__)
 
 
-@app.route('/api/lalala')
+@app.route('/wenqi/lalala')
 def hello():
-    return 'Hello World! I have been seen times./api/lalala'
+    return 'Hello World! I have been seen times./wenqi/lalala'
 
 
 if __name__ == "__main__":
