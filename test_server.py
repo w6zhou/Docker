@@ -10,7 +10,7 @@ def test_server(request):
     return {'message': 'hellow'}
 
 
-class RpcTransaction(helloword_pb2_grpc.RpcTransactionServicer):
+class Greeter(helloword_pb2_grpc.GreeterServicer):
     def SayHello(self, request, context):
         return helloword_pb2.HelloReply(**test_server(request))
 
@@ -18,8 +18,8 @@ class RpcTransaction(helloword_pb2_grpc.RpcTransactionServicer):
 def start_server():
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    helloword_pb2_grpc.add_RpcTransactionServicer_to_server(RpcTransaction(), server)
-    server.add_insecure_port('%s:%s' % ('localhost', ''))
+    helloword_pb2_grpc.add_RpcTransactionServicer_to_server(Greeter(), server)
+    server.add_insecure_port('%s:%s' % ('10.233.65.95', '54321'))
     server.start()
 
     try:
