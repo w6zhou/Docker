@@ -12,6 +12,7 @@ def test_server(request):
 
 class Greeter(helloword_pb2_grpc.GreeterServicer):
     def SayHello(self, request, context):
+        print 'hellow'
         return helloword_pb2.HelloReply(**test_server(request))
 
 
@@ -24,7 +25,7 @@ def start_server():
 
     try:
         while True:
-            time.sleep(5)
+            time.sleep(24 * 60 * 60)
     except KeyboardInterrupt:
         server.stop(0)
 
