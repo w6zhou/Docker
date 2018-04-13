@@ -18,7 +18,7 @@ class Greeter(helloword_pb2_grpc.GreeterServicer):
 def start_server():
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    helloword_pb2_grpc.add_RpcTransactionServicer_to_server(Greeter(), server)
+    helloword_pb2_grpc.add_GreeterServicer_to_server(Greeter(), server)
     server.add_insecure_port('%s:%s' % ('10.233.65.95', '54321'))
     server.start()
 
