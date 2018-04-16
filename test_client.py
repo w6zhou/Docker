@@ -21,7 +21,7 @@ if __name__ == "__main__":
     print start
     count = 0
     now = int(time.time())
-    while (now-start) < 5000:
+    while True:
         box_unlock()
         count = count + 1
         print count
