@@ -1,12 +1,14 @@
+import time
+
 import grpc
 
 import helloword_pb2, helloword_pb2_grpc
 
 
 def box_unlock():
-    channel = grpc.insecure_channel("%s:%s" % ('10.233.65.95', '54321'))
+    channel = grpc.insecure_channel("%s:%s" % ('www.phpserver.com', '80'))
     stub = helloword_pb2_grpc.GreeterStub(channel)
-    kwargs = {'name': 'wenqi', 'name2': 'wenqi2'}
+    kwargs = {'name': '5', 'name2': '6'}
     req = helloword_pb2.HelloRequest(**kwargs)
     response = stub.SayHello(req, 30)
     print response
@@ -14,4 +16,13 @@ def box_unlock():
 
 
 if __name__ == "__main__":
-    box_unlock()
+    # 5005152
+    start = int(time.time())
+    print start
+    count = 0
+    now = int(time.time())
+    while (now-start) < 5000:
+        box_unlock()
+        count = count + 1
+        print count
+        now = int(time.time())
