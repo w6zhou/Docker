@@ -98,7 +98,7 @@ class ApiUser(GrpcLocust):
             kwargs = {'name': '5', 'name2': '6'}
             request = helloword_pb2.HelloRequest(**kwargs)
             try:
-                reply = client.SayHello(request, 3)
+                reply = client.SayHello(request)
             except Exception,e:
                 total_time = int((time.time() - start_time) * 1000)
                 events.request_failure.fire(request_type="grpc", name=HOST, response_time=total_time, exception=e)

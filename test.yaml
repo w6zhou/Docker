@@ -34,18 +34,3 @@ spec:
         ports:
         - containerPort: 5000
 ---
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: wenqi
-  annotations:
-    kubernetes.io/ingress.class: "istio"
-spec:
-  rules:
-  - http:
-      paths:
-      - path: /api/*
-        backend:
-          serviceName: wenqi
-          servicePort: 5000
----
