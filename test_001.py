@@ -54,8 +54,8 @@ class GrpcLocust(Locust):
 
 
 class ApiUser(GrpcLocust):
-    min_wait = 90
-    max_wait = 110
+    min_wait = 10
+    max_wait = 20
     stop_timeout = 100000
 
     class task_set(TaskSet):
