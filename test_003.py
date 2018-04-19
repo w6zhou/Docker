@@ -3,12 +3,10 @@
 
 import os,sys, argparse
 sys.path.append("..")
-import grpc
 import json
-import requests
+from hyper import HTTP20Connection
 import time
 
-import helloword_pb2, helloword_pb2_grpc
 from locust import Locust, TaskSet, task, events
 from locust.events import EventHook
 
@@ -21,7 +19,7 @@ def parse_arguments():
     opts = vars(args)
     return args.host, int(args.clients), int(args.hatch_rate)
 
-HOST, MAX_USERS_NUMBER, USERS_PRE_SECOND = 'www.goserver.com:80', 1, 10
+HOST, MAX_USERS_NUMBER, USERS_PRE_SECOND = 'http2bin.org', 1, 10
 
 # 分布式，需要启多台压测时,有一个master，其余为slave
 slaves_connect = []
@@ -57,6 +55,7 @@ class ApiUser(GrpcLocust):
     min_wait = 0
     max_wait = 0
     stop_timeout = 100
+    host = 'http://http2bin.org/'
 
     class task_set(TaskSet):
         def getEnviron(self, key, default):
@@ -65,40 +64,21 @@ class ApiUser(GrpcLocust):
             else:
                 return default
 
-        def getToken(self):
-            consumer_key = self.getEnviron('SELDON_OAUTH_KEY', 'oauthkey')
-            consumer_secret = self.getEnviron('SELDON_OAUTH_SECRET', 'oauthsecret')
-            params = {}
-
-            params["consumer_key"] = consumer_key
-            params["consumer_secret"] = consumer_secret
-
-            url = self.oauth_endpoint + "/token"
-            r = requests.get(url, params=params)
-            if r.status_code == requests.codes.ok:
-                j = json.loads(r.text)
-                # print j
-                return j["access_token"]
-            else:
-                print "failed call to get token"
-                return None
-
         def on_start(self):
-            # print "on start"
-#            self.oauth_endpoint = self.getEnviron('SELDON_OAUTH_ENDPOINT', "http://127.0.0.1:50053")
-#            self.token = self.getToken()
-            self.grpc_endpoint = self.getEnviron('SELDON_GRPC_ENDPOINT', "www.goserver.com:80")
-            self.data_size = int(self.getEnviron('SELDON_DEFAULT_DATA_SIZE', "784"))
+          print "on start"
+          # self.oauth_endpoint = self.getEnviron('SELDON_OAUTH_ENDPOINT', "http://127.0.0.1:50053")
+          # self.token = self.getToken()
+
+
 
         @task
         def get_prediction(self):
-            conn = grpc.insecure_channel(self.grpc_endpoint)
-            client = helloword_pb2_grpc.GreeterStub(conn)
+            c = HTTP20Connection('http2bin.org')
+            c.request('GET', '/')
             start_time = time.time()
-            kwargs = {'name': '5', 'name2': '6'}
-            request = helloword_pb2.HelloRequest(**kwargs)
             try:
-                reply = client.SayHello(request, 3)
+                resp = c.get_response()
+                print resp
             except Exception,e:
                 total_time = int((time.time() - start_time) * 1000)
                 events.request_failure.fire(request_type="grpc", name=HOST, response_time=total_time, exception=e)
